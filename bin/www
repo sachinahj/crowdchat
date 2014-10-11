@@ -1,0 +1,109 @@
+#!/usr/bin/env node
+var debug = require('debug')('twitter-crowd');
+var app = require('../app');
+var io = require('socket.io');
+
+
+app.set('port', process.env.PORT || 3000);
+
+var server = app.listen(app.get('port'), function() {
+  debug('Express server listening on port ' + server.address().port);
+});
+
+// to rad prototype function
+Number.prototype.toRad = function() {
+   return this * Math.PI / 180;
+}
+
+
+var lone_users = [];
+
+
+var User = function (new_user, sid) {
+  this.name = new_user.name;
+  this.sid = sid;
+  this.location = {
+    latitude: new_user.latitude,
+    longitude: new_user.longitude,
+    accuracy: new_user.accuracy
+  };
+  this.distance_from = function (user) {
+    var lat1 = this.location.latitude;
+    var lon1 = this.location.longitude;
+    var lat2 = user.location.latitude;
+    var lon2 = user.location.longitude;
+    var R =  6371; // km 
+    var x1 = lat2-lat1;
+    var dLat = x1.toRad();  
+    var x2 = lon2-lon1;
+    var dLon = x2.toRad();  
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) + 
+                    Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) * 
+                    Math.sin(dLon/2) * Math.sin(dLon/2);  
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var d = R * c; 
+    return d;
+  }
+};
+
+var Crowd = function (location, users) {
+  this.location = {};
+  this.users = this.users.concat(users);
+  this.messages = [];
+
+};
+
+
+var sio = io.listen(server);
+sio.sockets.on('connection', function (socket) {
+  console.log('a socket connected: ' + socket.id);
+
+  socket.on('newUser', function (new_user) {
+    new_user = new User(new_user, socket.id)
+    SearchLoneUsers(new_user)
+  });
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  socket.on('disconnect', function () {
+    console.log("a socket disconnected");
+  });
+
+});
+
+
+
+function SearchLoneUsers (new_user) {
+
+    var found = false;
+
+    for (var i = 0; i < lone_users.length; i++) {
+      if (lone_users[i].distance_from(new_user) < 1) {
+        found = true;
+      }
+    }
+    if (!found) {
+      lone_users.push(new_user);
+    }
+
+  
+}
+

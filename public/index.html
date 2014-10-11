@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html ng-app="angular_app">
+  <head>
+    <title>twitterCrowd</title>
+    <link rel='stylesheet' href='stylesheets/bootstrap/bootstrap.css' />
+    <link rel='stylesheet' href='stylesheets/style.css' />
+  </head>
+  <body>
+    <h1>twitterCrowd</h1>
+    <div ng-view></div>
+
+    <!-- jquery -->
+    <script type="text/javascript" src="javascripts/jquery-2.1.1.min.js"></script>
+    <!-- bootstrap -->
+    <script type="text/javascript" src="javascripts/bootstrap/bootstrap.js"></script>
+    <!-- angular -->
+    <script type="text/javascript" src="javascripts/angular.js"></script>
+    <script type="text/javascript" src="javascripts/angular-route.js"></script>
+    <!-- socket.io -->
+    <script type="text/javascript" src="https://cdn.socket.io/socket.io-1.1.0.js"></script>
+    <script type="text/javascript">
+      var socket = io.connect(window.location.hostname);
+    </script>
+    <!-- angular app and controllers -->
+    <script type="text/javascript" src="javascripts/angular-app.js"></script>
+    <script type="text/javascript" src="javascripts/controllers/home.js"></script>
+    <script type="text/javascript" src="javascripts/controllers/join.js"></script>
+  </body>
+</html>

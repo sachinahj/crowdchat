@@ -1,0 +1,9 @@
+<p ng-model="status">{{status}}</p>
+
+<input id="name_input" type="text" placeholder="name" ng-model="newName" ng-show="step === 'name'">
+
+<button id="name_submit" type="submit" class="btn btn-primary btn-xs" ng-click="setNameAndGetLocation()" ng-show="step === 'name'">submit</button>
+
+<div id="current_location_map"></div>
+
+<button id="location_submit" type="submit" class="btn btn-primary btn-xs" ng-click="sendInformation()" ng-show="step === 'map'">yes</button>
