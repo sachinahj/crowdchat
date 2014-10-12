@@ -1,27 +1,23 @@
-angular_app.controller('JoinController', function ($scope, $location) {
-  $scope.step = "name";
+angular_app.controller('JoinController', function ($scope, $location, userService, crowdService) {
+  $scope.step = "asking_name";
   var name = "";
-  $scope.status = "What is your name?"
   var location = {
     latitude: 0.0,
     longitude: 0.0,
     accuracy: 0
   };
 
-  $scope.setNameAndGetLocation = function () {
+  $scope.setName = function () {
+    // validate and return if incorrect
     if ($scope.newName === undefined || $scope.newName === "") {
       return;
     }
-
-    // set name
     name = $scope.newName;
-    $scope.newName = "";
+    $scope.step = "getting_location"
+    return true;    
+  }
 
-    // manipulate dom
-    $scope.step = "getting";
-    $scope.status = "Getting location....."
-
-    // get users location
+  $scope.getLocation = function () {
     var options = {
       enableHighAccuracy: true,
       timeout: 5000,
@@ -36,8 +32,8 @@ angular_app.controller('JoinController', function ($scope, $location) {
       location.accuracy = coordinates.accuracy;
 
       var location_template =  "<iframe " +
-        "width='300' " +
-        "height='300' " +
+        "width='200' " +
+        "height='200' " +
         "frameborder='0' style='border:0' " +
         "src='https://www.google.com/maps/embed/v1/place?key=AIzaSyCOnpZgn-7iSwcokSBUF8qM-BC2kbrC-v8" +
         "&q=" + location.latitude + "," + location.longitude + "'>" +
@@ -45,10 +41,8 @@ angular_app.controller('JoinController', function ($scope, $location) {
       
       $('#current_location_map').html(location_template);
       $scope.$apply(function () {
-        $scope.status = "Is this your location?"
-        $scope.step = "map"
+        $scope.step = "displaying_map"
       });
-      // socket.emit('gotLocation', coordinates)
     };
 
     function error(err) {
@@ -65,8 +59,26 @@ angular_app.controller('JoinController', function ($scope, $location) {
       longitude: location.longitude,
       accuracy: location.accuracy
     };
+
+    socket.on("userCreated", function (user) {
+      userService.setUser(user);
+    });
+
+    socket.on("crowdAvailable", function (crowd) {
+      if (crowd) {
+        crowdService.setCrowd(crowd);
+        $scope.$apply(function () {
+          $location.path('/crowd');
+        });
+      } else {
+        $scope.$apply(function () {
+          $location.path('/alone');
+        });
+      }
+
+    });
+
     socket.emit("newUser", newUser);
-    $location.path('/');
     
   }
 

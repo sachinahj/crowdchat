@@ -6,8 +6,17 @@
     <link rel='stylesheet' href='stylesheets/style.css' />
   </head>
   <body>
-    <h1>twitterCrowd</h1>
-    <div ng-view></div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-sm-1 col-xs-0"></div>
+            <div class="col-md-6 col-sm-10 col-xs-12">
+                <div ng-view></div>
+            </div>
+            <div class="col-md-3 col-sm-1 col-xs-0"></div>
+        </div>
+    </div>
+
 
     <!-- jquery -->
     <script type="text/javascript" src="javascripts/jquery-2.1.1.min.js"></script>
@@ -25,5 +34,7 @@
     <script type="text/javascript" src="javascripts/angular-app.js"></script>
     <script type="text/javascript" src="javascripts/controllers/home.js"></script>
     <script type="text/javascript" src="javascripts/controllers/join.js"></script>
+    <script type="text/javascript" src="javascripts/controllers/crowd.js"></script>
+    <script type="text/javascript" src="javascripts/controllers/alone.js"></script>
   </body>
 </html>
