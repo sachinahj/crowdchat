@@ -1,35 +1,45 @@
-<center>
-  <img class="logo-image" src="/images/logo.jpeg" />
-  <h2><u><b>CrowdChat</b></u></h2>
-  <br>
-</center>
-
-
-
-<div ng-show="step === 'asking_name'">
-  <h5>What is your name?</h5>
-  <input type="text" id="name-input" placeholder="Name" ng-model="newName" >
-  <br><br>
-  <center>
-    <button type="submit" class="btn btn-primary btn-md" ng-click="setName() && getLocation()">SUBMIT</button>
-  </center>
+<div class="row">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <center>
+      <h2 id="brand"><u><b>CrowdChat</b></u></h2>
+      <br>
+    </center>
+  </div>
 </div>
 
 
 
-<div ng-show="step === 'getting_location'">
-  <h5>Hi {{newName}}! We are getting your location; turn on your location services if necessary.</h5>
+<div class="row" ng-show="step === 'asking_name'">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <h3>What is your name?</h3>
+    <input type="text" id="name-input" placeholder="Name" ng-model="newName" >
+    <br><br>
+    <center>
+      <button type="submit" class="btn btn-primary btn-lg" ng-click="setName() && getLocation()">SUBMIT</button>
+    </center>
+  </div>
 </div>
 
 
 
-<div ng-show="step === 'displaying_map'">
-  <h5>{{newName}}, is this where you're at?</h5>
-  <center>
-    <div id="current_location_map"></div>
-  </center>
-  <a href="#/home" class="btn btn-danger btn-md pull-left">NO</a>
-  <button type="submit" id="location_submit" class="btn btn-success btn-md pull-right" ng-click="sendInformation()">YES</button>
+<div class="row" ng-show="step === 'getting_location'">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <h3>Hi {{newName}}!</h3>
+    <h4>We are getting your location; turn on your location services if necessary.</h4>
+  </div>
+</div>
+
+
+
+<div class="row" ng-show="step === 'displaying_map'">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+      <h4>{{newName}}, is this where you're at?</h4>
+      <center>
+        <div id="current_location_map"></div>
+      </center>
+      <a href="#/home" class="btn btn-danger btn-lg pull-left">NO</a>
+      <button type="submit" id="location_submit" class="btn btn-success btn-lg pull-right" ng-click="sendInformation()">YES</button>
+  </div>
 </div>
 
 

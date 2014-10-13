@@ -6,41 +6,70 @@ body {
 a {
   color: #00B7FF;
 }
-
-/* home */
-#logo-image {
-  width: 80%;
-}
-@media (min-width: 650px) {
-   #logo-image {
-    width: 10em;
-  }
-}
-#tag-line {
-  /*font-size: 5em;*/
-  margin-top: 0.5em;
-}
-#hop-in-button {
-  border-radius: 0.5em;
+.btn.btn-lg {
+  border-radius: 0.8em;
   font-size: 2em;
-  margin-top: 1em;
-  padding: 0.5em;
+  padding: 0.25em 0.5em 0.25em 0.5em;
   font-weight: bold;
 }
 
+/* home - begin */
+#logo-image {
+  width: 80%;
+  max-width: 30em;
+}
+#brand {
+  font-size: 3.5em;
+  margin-bottom: 0.5em;
+}
+#tag-line {
+  font-size: 1.5em;
+}
+#hop-in-button {
+  font-size: 3em;
+  margin-top: 0.5em;
+}
+/* home - end */
 
 
+/* join - begin */
 #name-input {
   width: 100%;
 }
-
-#new-message-input {
-  width: 90%;
+#leave_submit {
+  margin-top: 0.5em;
 }
+/* join - end */
 
+
+
+
+
+
+/* crowd  - begin */
 #users-window, #messages-window {
-  height: 250px;
+  height: 300px;
   overflow-y: scroll;
   border: 1px solid black;
+  margin-bottom: 1em;
 }
 
+/* crowd > users */
+
+
+/* crowd > messages */
+#new-message-submit-button { 
+  font-weight: bold;
+  height: 35px;
+  width: 30%;
+}
+#new-message-input {
+  width: 70%;
+  font-size: 1em;
+  line-height: 30px;
+}
+
+
+/* crowd > map */
+
+/* crowd - end */

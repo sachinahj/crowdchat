@@ -1,7 +1,7 @@
 angular_app.controller('CrowdController', function ($scope, $location, userService, crowdService) {
   
 
-  $scope.tab = 'users';
+  $scope.tab = 'messages';
   $scope.new_message = "";
   $scope.user = userService.getUser();
   $scope.crowd = crowdService.getCrowd();

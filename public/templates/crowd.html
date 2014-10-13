@@ -1,12 +1,12 @@
 <div class="row">
-  <div class="col-md-8 col-sm-8 col-xs-8 pull-left">
+  <div class="col-md-9 col-sm-9 col-xs-9 pull-left">
     <div class="btn-group">
-      <button type="button" class="btn btn-default" ng-click="tab = 'users'">Users</button>
-      <button type="button" class="btn btn-default" ng-click="tab = 'messages'">Messages</button>
-      <button type="button" class="btn btn-default" ng-click="tab = 'map'">Map</button>
+      <button type="button" class="btn btn-default" ng-class="{active:tab==='users'}" ng-click="tab='users'">Users</button>
+      <button type="button" class="btn btn-default" ng-class="{active:tab==='messages'}" ng-click="tab='messages'">Messages</button>
+      <button type="button" class="btn btn-default" ng-class="{active:tab==='maps'}" ng-click="tab='map'">Map</button>
     </div>
   </div>
-  <div class="col-md-4 col-sm-4 col-xs-4">
+  <div class="col-md-3 col-sm-3 col-xs-3">
     <h5 class="text-right">{{user.name}} [{{crowd.id}}]</h5>
   </div>  
 </div>
@@ -22,13 +22,22 @@
 
 <div class="row" ng-show="tab === 'messages'">
   <div class="col-md-12 col-sm-12 col-xs-12">
-    <h3><u>Messages</u></h3>
-    <div id="messages-window">
-      <h4 class="text-right" ng-repeat="message in messages">{{message.name}}: {{message.content}}</h4>
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <h3><u>Messages</u></h3>
+        <div id="messages-window">
+          <h4 class="text-right" ng-repeat="message in messages">{{message.name}}: {{message.content}}</h4>
+        </div>
+      </div>
     </div>
-    <br>
-    <input type="text" id="new-message-input" ng-model="new_message">
-    <button type="submit" class="btn btn-primary btn-xs pull-right" ng-click="sendMessage()">SEND</button>
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <form ng-submit"sendMessage()">
+          <button type="submit" id="new-message-submit-button" class="btn btn-primary btn-xs pull-right" ng-click="sendMessage()">SEND</button>
+          <input type="text" id="new-message-input" ng-model="new_message">
+        </form>
+      </div>
+    </div>
   </div>
 </div>
 
