@@ -1,12 +1,40 @@
-<h5 class="text-right">[{{crowd.id}}]</h5>
 <div class="row">
-  <div class="col-md-3 col-sm-3 col-xs-3">
-    <h4><u>Users</u></h4>
-    <h6 ng-repeat="user in crowd.users">{{user.name}}</h6>
+  <div class="col-md-8 col-sm-8 col-xs-8 pull-left">
+    <div class="btn-group">
+      <button type="button" class="btn btn-default" ng-click="tab = 'users'">Users</button>
+      <button type="button" class="btn btn-default" ng-click="tab = 'messages'">Messages</button>
+      <button type="button" class="btn btn-default" ng-click="tab = 'map'">Map</button>
+    </div>
   </div>
-  <div class="col-md-9 col-sm-9 col-xs-9">
-    <h6 ng-repeat="message in crowd.messages">{{message}}</h6>
+  <div class="col-md-4 col-sm-4 col-xs-4">
+    <h5 class="text-right">{{user.name}} [{{crowd.id}}]</h5>
+  </div>  
+</div>
+
+<div class="row" ng-show="tab === 'users'">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <h3><u>Users</u></h3>
+    <div id="users-window">
+      <h4 class="text-right" ng-repeat="user in users">{{user.name}}</h4>
+    </div>
   </div>
 </div>
 
+<div class="row" ng-show="tab === 'messages'">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <h3><u>Messages</u></h3>
+    <div id="messages-window">
+      <h4 class="text-right" ng-repeat="message in messages">{{message.name}}: {{message.content}}</h4>
+    </div>
+    <br>
+    <input type="text" id="new-message-input" ng-model="new_message">
+    <button type="submit" class="btn btn-primary btn-xs pull-right" ng-click="sendMessage()">SEND</button>
+  </div>
+</div>
 
+<div class="row" ng-show="tab === 'map'">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <h3><u>Map</u></h3>
+    <!-- <h4 class="text-right" ng-repeat="message in crowd.messages">{{user.name}}</h4> -->
+  </div>
+</div>

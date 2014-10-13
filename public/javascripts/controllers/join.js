@@ -32,7 +32,7 @@ angular_app.controller('JoinController', function ($scope, $location, userServic
       location.accuracy = coordinates.accuracy;
 
       var location_template =  "<iframe " +
-        "width='200' " +
+        "width='400' " +
         "height='200' " +
         "frameborder='0' style='border:0' " +
         "src='https://www.google.com/maps/embed/v1/place?key=AIzaSyCOnpZgn-7iSwcokSBUF8qM-BC2kbrC-v8" +

@@ -22,10 +22,13 @@ Number.prototype.toDeg = function() {
 var clients = {};
 var lone_users = [];
 var available_crowds = [];
-var crowd_counter = 1;
+var crowds_counter = 1;
+var users_counter = 1;
 
 
 var User = function (new_user, sid) {
+  this.id = users_counter;
+  users_counter += 1;
   this.name = new_user.name;
   this.sid = sid;
   this.location = {
@@ -53,17 +56,29 @@ var User = function (new_user, sid) {
 };
 
 var Crowd = function (location, users) {
-  this.id = crowd_counter;
-  crowd_counter += 1;
+  this.id = crowds_counter;
+  crowds_counter += 1;
   this.location = location;
   this.users = users;
+  var message_counter = 0;
   this.messages = [];
   this.addUser = function (new_user) {
     this.users.push(new_user);
     return this;
   }
-
+  this.addMessage = function (user_id, name, content) {
+    var message = {
+      id: message_counter,
+      user_id: user_id,
+      name: name,
+      content: content
+    }
+    message_counter += 1
+    this.messages.push(message);
+    return message;
+  }
 };
+
 
 
 var sio = io.listen(server);
@@ -75,21 +90,35 @@ sio.sockets.on('connection', function (socket) {
     new_user = new User(new_user, socket.id);
     socket.emit('userCreated', new_user);
     
-    var crowd = getCrowd(new_user);
-    if (crowd) {
-      for (var i = 0; i < crowd.users.length; i++) {
-        clients[crowd.users[i].sid].join(crowd.id);
-      }
+    var selected_crowd = getCrowd(new_user);
+    var crowd = selected_crowd[0];
+    var crowd_type = selected_crowd[1];
+
+    if (crowd_type === "new") {
+
       socket.emit('crowdAvailable', crowd);
       sio.sockets.to(crowd.id).emit('crowdUpdate', crowd);
+
+    } else if (crowd_type === "update") {
+
+      clients[new_user.sid].join(crowd.id);
+      socket.emit('crowdAvailable', crowd);
+      sio.sockets.to(crowd.id).emit('crowdUpdate', crowd);
+
     } else {
-      socket.emit('crowdAvailable', false);
+
+      socket.emit('crowdAvailable', undefined); 
     }
   });
-  
-  
 
 
+  socket.on('createNewMessage', function (new_message) {
+    var crowd_id = new_message.crowd_id;
+    var message_crowd = createMessageForCrowd(new_message, crowd_id);
+
+    sio.sockets.to(crowd_id).emit('crowdUpdate', message_crowd[1]);
+    sio.sockets.to(crowd_id).emit('newMessage', message_crowd[0]);
+  });
 
 
 
@@ -113,14 +142,27 @@ sio.sockets.on('connection', function (socket) {
 
 });
 
+function createMessageForCrowd (new_message, crowd_id) {
 
+  for (var i = 0; i < available_crowds.length; i++) {
+    if (available_crowds[i].id === crowd_id) {
+      var message = available_crowds[i].addMessage(new_message.user_id, new_message.name, new_message.content);
+      var crowd = available_crowds[i];
+      console.log("crowd", crowd);
+      return [message, crowd];
+    }
+  }  
+
+  return false;
+
+}
 
 function getCrowd (new_user) {
 
   for (var i = 0; i < available_crowds.length; i++) {
     if (new_user.distance_from(available_crowds[i]) < 1) {
       var crowd = available_crowds[i].addUser(new_user);
-      return crowd;
+      return [crowd, "update"];
     }
   }
 
@@ -129,13 +171,16 @@ function getCrowd (new_user) {
       var found_user = lone_users.splice(i,1)[0];
       var midpoint_location = DetermineMidPoint(found_user.location, new_user.location)
       var new_crowd = new Crowd(midpoint_location, [found_user, new_user]);
+      for (var i = 0; i < new_crowd.users.length; i++) {
+        clients[new_crowd.users[i].sid].join(new_crowd.id);
+      }
       available_crowds.push(new_crowd)
-      return new_crowd;
+      return [new_crowd, "new"];
     }
   }
   
   lone_users.push(new_user);
-  return false;
+  return [null, "none"];
     
 }
 

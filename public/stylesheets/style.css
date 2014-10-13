@@ -1,5 +1,5 @@
 body {
-  padding: 50px;
+  padding: 0px 0px 10px 0px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -7,9 +7,40 @@ a {
   color: #00B7FF;
 }
 
-.logo-image {
-  height: 10em;
+/* home */
+#logo-image {
+  width: 80%;
 }
-.text-input {
+@media (min-width: 650px) {
+   #logo-image {
+    width: 10em;
+  }
+}
+#tag-line {
+  /*font-size: 5em;*/
+  margin-top: 0.5em;
+}
+#hop-in-button {
+  border-radius: 0.5em;
+  font-size: 2em;
+  margin-top: 1em;
+  padding: 0.5em;
+  font-weight: bold;
+}
+
+
+
+#name-input {
   width: 100%;
 }
+
+#new-message-input {
+  width: 90%;
+}
+
+#users-window, #messages-window {
+  height: 250px;
+  overflow-y: scroll;
+  border: 1px solid black;
+}
+

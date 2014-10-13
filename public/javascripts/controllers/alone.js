@@ -2,8 +2,7 @@ angular_app.controller('AloneController', function ($scope, $location, userServi
   
   $scope.user = userService.getUser();  
 
-  socket.on("crowdUpdate", function (crowd) {
-    crowdService.setCrowd(crowd);
+  socket.on("crowdUpdate", function (updated_crowd) {
     $scope.$apply(function () {
       $location.path('/crowd');
     });

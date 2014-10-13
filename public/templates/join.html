@@ -8,7 +8,7 @@
 
 <div ng-show="step === 'asking_name'">
   <h5>What is your name?</h5>
-  <input type="text" class="text-input" placeholder="Name" ng-model="newName" >
+  <input type="text" id="name-input" placeholder="Name" ng-model="newName" >
   <br><br>
   <center>
     <button type="submit" class="btn btn-primary btn-md" ng-click="setName() && getLocation()">SUBMIT</button>
