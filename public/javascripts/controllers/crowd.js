@@ -9,13 +9,10 @@ angular_app.controller('CrowdController', function ($scope, $location, userServi
   $scope.messages = $scope.crowd.messages;
 
   if ($scope.crowd.id === undefined || $scope.user.sid === undefined ) {
-    $location.path('/');
+    $location.path('/home');
   }
   
 
-  socket.on("crowdUpdate", function (update_crowd) {
-    $scope.crowd = update_crowd;
-  });
 
   $scope.sendMessage = function () {
     if ($scope.new_message === undefined || $scope.new_message === "") {
@@ -33,14 +30,22 @@ angular_app.controller('CrowdController', function ($scope, $location, userServi
     return true;
   }
 
-  socket.on("newMessage", function (message) {
-    console.log("newMessage", message);
+  socket.on("crowdUpdate", function (update_crowd) {
     $scope.$apply(function () {
       $scope.crowd = crowdService.getCrowd();
+      $scope.users = $scope.crowd.users;
       $scope.messages = $scope.crowd.messages;
-      console.log("newMessage scope apply", $scope.messages);
+      if ($scope.crowd.id === undefined) {
+        $location.path('/');
+      }
     });
   });
+  
+  // socket.on("newMessage", function (message) {
+  //   $scope.$apply(function () {
+  //     $scope.crowd = crowdService.getCrowd();
+  //   });
+  // });
 
 });
 

@@ -12,11 +12,13 @@
 <div class="row" ng-show="step === 'asking_name'">
   <div class="col-md-12 col-sm-12 col-xs-12">
     <h3>What is your name?</h3>
-    <input type="text" id="name-input" placeholder="Name" ng-model="newName" >
-    <br><br>
-    <center>
-      <button type="submit" class="btn btn-primary btn-lg" ng-click="setName() && getLocation()">SUBMIT</button>
-    </center>
+    <form ng-submit="setName() && getLocation()">
+      <input type="text" id="name-input" placeholder="Name" ng-model="newName" focus="true">
+      <br><br>
+      <center>
+        <button type="submit" class="btn btn-primary btn-lg" ng-click="setName() && getLocation()">SUBMIT</button>
+      </center>
+    </form>
   </div>
 </div>
 

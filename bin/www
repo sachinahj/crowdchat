@@ -14,6 +14,7 @@ var server = app.listen(app.get('port'), function() {
 Number.prototype.toRad = function() {
    return this * Math.PI / 180;
 }
+// to deg prototype function
 Number.prototype.toDeg = function() {
    return this * 180 / Math.PI;
 }
@@ -25,7 +26,7 @@ var available_crowds = [];
 var crowds_counter = 1;
 var users_counter = 1;
 
-
+// constructor user function
 var User = function (new_user, sid) {
   this.id = users_counter;
   users_counter += 1;
@@ -55,6 +56,7 @@ var User = function (new_user, sid) {
   }
 };
 
+// constructor crowd function
 var Crowd = function (location, users) {
   this.id = crowds_counter;
   crowds_counter += 1;
@@ -80,12 +82,13 @@ var Crowd = function (location, users) {
 };
 
 
-
+// socket stuff
 var sio = io.listen(server);
 sio.sockets.on('connection', function (socket) {
   console.log('a socket connected: ' + socket.id);
   clients[socket.id] = socket;
 
+  // on new user
   socket.on('newUser', function (new_user) {
     new_user = new User(new_user, socket.id);
     socket.emit('userCreated', new_user);
@@ -111,13 +114,11 @@ sio.sockets.on('connection', function (socket) {
     }
   });
 
-
+  // on create new message
   socket.on('createNewMessage', function (new_message) {
     var crowd_id = new_message.crowd_id;
-    var message_crowd = createMessageForCrowd(new_message, crowd_id);
-
-    sio.sockets.to(crowd_id).emit('crowdUpdate', message_crowd[1]);
-    sio.sockets.to(crowd_id).emit('newMessage', message_crowd[0]);
+    var crowd = createMessageForCrowd(new_message, crowd_id);
+    sio.sockets.to(crowd.id).emit('crowdUpdate', crowd);
   });
 
 
@@ -126,37 +127,52 @@ sio.sockets.on('connection', function (socket) {
 
 
 
-
-
-
-
-
-
-
-
-
-
+  // on disconnect
   socket.on('disconnect', function () {
     console.log("a socket disconnected");
+    var crowd = deleteUserInCrowdFromSid(socket.id);
+    if (crowd !== null) {
+      sio.sockets.to(crowd[1]).emit('crowdUpdate', crowd[0]);
+    }
   });
 
 });
 
+
+function deleteUserInCrowdFromSid (sid) {
+  for (var i = 0; i < available_crowds.length; i++) {
+    for (var j = 0; j < available_crowds[i].users.length; j++) {
+      if (sid === available_crowds[i].users[j].sid) {
+        var user = available_crowds[i].users.splice(j,1);
+        var crowd = available_crowds[i];
+        if (crowd.users.length > 1) {
+          return [crowd, crowd.id];
+        } else {
+          available_crowds.splice(i,1);
+          return [{}, crowd.id];
+        }
+      }
+    }
+  }  
+  return null;
+}
+
+
+// create new message for crowd from crowd id and return updated crowd
 function createMessageForCrowd (new_message, crowd_id) {
 
   for (var i = 0; i < available_crowds.length; i++) {
     if (available_crowds[i].id === crowd_id) {
       var message = available_crowds[i].addMessage(new_message.user_id, new_message.name, new_message.content);
       var crowd = available_crowds[i];
-      console.log("crowd", crowd);
-      return [message, crowd];
+      return crowd;
     }
   }  
 
   return false;
-
 }
 
+// get crowd at new users location or create crowd with lone user or return null
 function getCrowd (new_user) {
 
   for (var i = 0; i < available_crowds.length; i++) {
@@ -180,12 +196,13 @@ function getCrowd (new_user) {
   }
   
   lone_users.push(new_user);
-  return [null, "none"];
-    
+  return [null, "none"];  
 }
 
 
+// determine midpoint between two location objects
 function DetermineMidPoint (location1, location2) {
+
   var lat1 = location1.latitude;
   var lon1 = location1.longitude;
   var lat2 = location2.latitude;
