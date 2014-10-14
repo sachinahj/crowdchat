@@ -41,9 +41,11 @@
   </div>
 </div>
 
-<div class="row" ng-show="tab === 'map'">
+<div class="row" ng-show="tab === 'map'" ng-init="mapInit()">
   <div class="col-md-12 col-sm-12 col-xs-12">
     <h3><u>Map</u></h3>
+    <div id="map-canvas"></div>
     <!-- <h4 class="text-right" ng-repeat="message in crowd.messages">{{user.name}}</h4> -->
   </div>
 </div>
+
