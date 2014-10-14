@@ -30,6 +30,14 @@ var deleteUserInCrowdFromSid = function (sid) {
       }
     }
   }  
+
+  for (var i = 0; i < lone_users.length; i++) {
+    if (sid === lone_users[i].sid) {
+      lone_users.splice(i,1)
+      return null;
+    }
+  }
+
   return null;
 }
 
