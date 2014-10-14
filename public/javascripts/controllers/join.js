@@ -64,11 +64,10 @@ angular_app.controller('JoinController', function ($scope, $location, userServic
       userService.setUser(user);
     });
 
-    socket.on("crowdAvailable", function (crowd) {
-      if (crowd) {
-        crowdService.setCrowd(crowd);
+    socket.on("crowdAvailable", function (isCrowd) {
+      if (isCrowd) {
         $scope.$apply(function () {
-          $location.path('/crowd');
+          $location.path('/found');
         });
       } else {
         $scope.$apply(function () {

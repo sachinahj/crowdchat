@@ -9,7 +9,7 @@ angular_app.controller('CrowdController', function ($scope, $location, userServi
   $scope.messages = $scope.crowd.messages;
 
   if ($scope.crowd.id === undefined || $scope.user.sid === undefined ) {
-    $location.path('/home');
+    $location.path('/alone');
   }
   
   $scope.sendMessage = function () {
@@ -37,7 +37,7 @@ angular_app.controller('CrowdController', function ($scope, $location, userServi
         $scope.mapInit();
       }
       if ($scope.crowd.id === undefined) {
-        $location.path('/');
+        $location.path('/alone');
       }
     });
   });
@@ -63,7 +63,6 @@ angular_app.controller('CrowdController', function ($scope, $location, userServi
 
         // set user markers
         for (var i = 0; i < $scope.users.length; i++) {
-          console.log("user", $scope.users[i]);
           var markerCenter = new google.maps.LatLng(
             $scope.users[i].location.latitude,
             $scope.users[i].location.longitude
@@ -99,9 +98,6 @@ angular_app.controller('CrowdController', function ($scope, $location, userServi
 
   }
 
-    // var response = google.maps.event.addDomListener(window, 'load', mapInit);
-    // console.log("response", response);
-  // }
 
 });
 

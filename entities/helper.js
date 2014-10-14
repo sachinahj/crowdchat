@@ -19,12 +19,13 @@ var deleteUserInCrowdFromSid = function (sid) {
   for (var i = 0; i < available_crowds.length; i++) {
     for (var j = 0; j < available_crowds[i].users.length; j++) {
       if (sid === available_crowds[i].users[j].sid) {
-        var user = available_crowds[i].users.splice(j,1);
+        var user = available_crowds[i].users.splice(j,1)[0];
         var crowd = available_crowds[i];
         if (crowd.users.length > 1) {
           return [crowd, crowd.id];
         } else {
-          available_crowds.splice(i,1);
+          lone_users.push(crowd.users[0]);
+          available_crowds.splice(i,1)[0]
           return [{}, crowd.id];
         }
       }
@@ -93,15 +94,12 @@ var getCrowd = function (new_user) {
       return [crowd, "update"];
     }
   }
-
+  console.log("lone_users", lone_users);
   for (var i = 0; i < lone_users.length; i++) {
     if (new_user.distance_from(lone_users[i]) < 1) {
       var found_user = lone_users.splice(i,1)[0];
       var midpoint_location = DetermineMidPoint(found_user.location, new_user.location)
       var new_crowd = new Crowd(midpoint_location, [found_user, new_user]);
-      for (var i = 0; i < new_crowd.users.length; i++) {
-        global.clients[new_crowd.users[i].sid].join(new_crowd.id);
-      }
       available_crowds.push(new_crowd)
       return [new_crowd, "new"];
     }

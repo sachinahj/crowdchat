@@ -34,19 +34,21 @@ sio.sockets.on('connection', function (socket) {
     var crowd_type = selected_crowd[1];
 
     if (crowd_type === "new") {
-
-      socket.emit('crowdAvailable', crowd);
+      for (var i = 0; i < crowd.users.length; i++) {
+        global.clients[crowd.users[i].sid].join(crowd.id);
+      }
+      socket.emit('crowdAvailable', true);
       sio.sockets.to(crowd.id).emit('crowdUpdate', crowd);
 
     } else if (crowd_type === "update") {
 
       global.clients[new_user.sid].join(crowd.id);
-      socket.emit('crowdAvailable', crowd);
+      socket.emit('crowdAvailable', true);
       sio.sockets.to(crowd.id).emit('crowdUpdate', crowd);
 
     } else {
 
-      socket.emit('crowdAvailable', undefined); 
+      socket.emit('crowdAvailable', false); 
     }
   });
 
@@ -65,6 +67,7 @@ sio.sockets.on('connection', function (socket) {
 
   // on disconnect
   socket.on('disconnect', function () {
+    delete global.clients[socket.id];
     console.log("a socket disconnected");
     var crowd = helper.deleteUserInCrowdFromSid(socket.id);
     if (crowd !== null) {

@@ -22,6 +22,11 @@ angular_app.config(function ($routeProvider) {
       controller: 'AloneController',
       templateUrl: '../templates/alone.html'
     })
+    .when('/found',
+    {
+      controller: 'FoundController',
+      templateUrl: '../templates/found.html'
+    })
     .otherwise( {redirectTo: '/home'} );
 });
 
