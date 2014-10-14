@@ -2,7 +2,15 @@
 var debug = require('debug')('twitter-crowd');
 var app = require('../app');
 var io = require('socket.io');
+var clients = {};
+var lone_users = [];
+var available_crowds = [];
 
+
+
+var helper = require('../entities/helper');
+var User = require('../entities/user');
+var Crowd = require('../entities/crowd');
 
 app.set('port', process.env.PORT || 3000);
 
@@ -10,76 +18,73 @@ var server = app.listen(app.get('port'), function() {
   debug('Express server listening on port ' + server.address().port);
 });
 
-// to rad prototype function
-Number.prototype.toRad = function() {
-   return this * Math.PI / 180;
-}
-// to deg prototype function
-Number.prototype.toDeg = function() {
-   return this * 180 / Math.PI;
-}
+// // to rad prototype function
+// Number.prototype.toRad = function() {
+//    return this * Math.PI / 180;
+// }
+// // to deg prototype function
+// Number.prototype.toDeg = function() {
+//    return this * 180 / Math.PI;
+// }
 
 
-var clients = {};
-var lone_users = [];
-var available_crowds = [];
-var crowds_counter = 1;
-var users_counter = 1;
+// var crowds_counter = 1;
+// var users_counter = 1;
 
-// constructor user function
-var User = function (new_user, sid) {
-  this.id = users_counter;
-  users_counter += 1;
-  this.name = new_user.name;
-  this.sid = sid;
-  this.location = {
-    latitude: new_user.latitude,
-    longitude: new_user.longitude,
-    accuracy: new_user.accuracy
-  };
-  this.distance_from = function (user_crowd) {
-    var lat1 = this.location.latitude;
-    var lon1 = this.location.longitude;
-    var lat2 = user_crowd.location.latitude;
-    var lon2 = user_crowd.location.longitude;
-    var R =  6371; // km 
-    var x1 = lat2-lat1;
-    var dLat = x1.toRad();  
-    var x2 = lon2-lon1;
-    var dLon = x2.toRad();  
-    var a = Math.sin(dLat/2) * Math.sin(dLat/2) + 
-            Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) * 
-            Math.sin(dLon/2) * Math.sin(dLon/2);  
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-    var d = R * c; 
-    return d;
-  }
-};
+// // constructor user function
+// var User = function (new_user, sid) {
+//   this.id = users_counter;
+//   users_counter += 1;
+//   this.name = new_user.name;
+//   this.sid = sid;
+//   this.location = {
+//     latitude: new_user.latitude,
+//     longitude: new_user.longitude,
+//     accuracy: new_user.accuracy
+//   };
+//   this.distance_from = function (user_crowd) {
+//     var lat1 = this.location.latitude;
+//     var lon1 = this.location.longitude;
+//     var lat2 = user_crowd.location.latitude;
+//     var lon2 = user_crowd.location.longitude;
+//     var R =  6371; // km 
+//     var x1 = lat2-lat1;
+//     var dLat = x1.toRad();  
+//     var x2 = lon2-lon1;
+//     var dLon = x2.toRad();  
+//     var a = Math.sin(dLat/2) * Math.sin(dLat/2) + 
+//             Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) * 
+//             Math.sin(dLon/2) * Math.sin(dLon/2);  
+//     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+//     var d = R * c; 
+//     return d;
+//   }
+// };
 
-// constructor crowd function
-var Crowd = function (location, users) {
-  this.id = crowds_counter;
-  crowds_counter += 1;
-  this.location = location;
-  this.users = users;
-  var message_counter = 0;
-  this.messages = [];
-  this.addUser = function (new_user) {
-    this.users.push(new_user);
-    return this;
-  }
-  this.addMessage = function (user_id, name, content) {
-    var message = {
-      id: message_counter,
-      user_id: user_id,
-      name: name,
-      content: content
-    }
-    message_counter += 1
-    this.messages.push(message);
-    return message;
-  }
-};
+// // constructor crowd function
+// var Crowd = function (location, users) {
+//   this.id = crowds_counter;
+//   crowds_counter += 1;
+//   this.location = location;
+//   this.users = users;
+//   var message_counter = 0;
+//   this.messages = [];
+//   this.addUser = function (new_user) {
+//     this.users.push(new_user);
+//     return this;
+//   }
+//   this.addMessage = function (user_id, name, content) {
+//     var message = {
+//       id: message_counter,
+//       user_id: user_id,
+//       name: name,
+//       content: content
+//     }
+//     message_counter += 1
+//     this.messages.push(message);
+//     return message;
+//   }
+// };
 
 
 // socket stuff
@@ -93,7 +98,7 @@ sio.sockets.on('connection', function (socket) {
     new_user = new User(new_user, socket.id);
     socket.emit('userCreated', new_user);
     
-    var selected_crowd = getCrowd(new_user);
+    var selected_crowd = helper.getCrowd(new_user);
     var crowd = selected_crowd[0];
     var crowd_type = selected_crowd[1];
 
@@ -117,7 +122,7 @@ sio.sockets.on('connection', function (socket) {
   // on create new message
   socket.on('createNewMessage', function (new_message) {
     var crowd_id = new_message.crowd_id;
-    var crowd = createMessageForCrowd(new_message, crowd_id);
+    var crowd = helper.createMessageForCrowd(new_message, crowd_id);
     sio.sockets.to(crowd.id).emit('crowdUpdate', crowd);
   });
 
@@ -130,7 +135,7 @@ sio.sockets.on('connection', function (socket) {
   // on disconnect
   socket.on('disconnect', function () {
     console.log("a socket disconnected");
-    var crowd = deleteUserInCrowdFromSid(socket.id);
+    var crowd = helper.deleteUserInCrowdFromSid(socket.id);
     if (crowd !== null) {
       sio.sockets.to(crowd[1]).emit('crowdUpdate', crowd[0]);
     }
@@ -139,90 +144,90 @@ sio.sockets.on('connection', function (socket) {
 });
 
 
-function deleteUserInCrowdFromSid (sid) {
-  for (var i = 0; i < available_crowds.length; i++) {
-    for (var j = 0; j < available_crowds[i].users.length; j++) {
-      if (sid === available_crowds[i].users[j].sid) {
-        var user = available_crowds[i].users.splice(j,1);
-        var crowd = available_crowds[i];
-        if (crowd.users.length > 1) {
-          return [crowd, crowd.id];
-        } else {
-          available_crowds.splice(i,1);
-          return [{}, crowd.id];
-        }
-      }
-    }
-  }  
-  return null;
-}
+// function deleteUserInCrowdFromSid (sid) {
+//   for (var i = 0; i < available_crowds.length; i++) {
+//     for (var j = 0; j < available_crowds[i].users.length; j++) {
+//       if (sid === available_crowds[i].users[j].sid) {
+//         var user = available_crowds[i].users.splice(j,1);
+//         var crowd = available_crowds[i];
+//         if (crowd.users.length > 1) {
+//           return [crowd, crowd.id];
+//         } else {
+//           available_crowds.splice(i,1);
+//           return [{}, crowd.id];
+//         }
+//       }
+//     }
+//   }  
+//   return null;
+// }
 
 
-// create new message for crowd from crowd id and return updated crowd
-function createMessageForCrowd (new_message, crowd_id) {
+// // create new message for crowd from crowd id and return updated crowd
+// function createMessageForCrowd (new_message, crowd_id) {
 
-  for (var i = 0; i < available_crowds.length; i++) {
-    if (available_crowds[i].id === crowd_id) {
-      var message = available_crowds[i].addMessage(new_message.user_id, new_message.name, new_message.content);
-      var crowd = available_crowds[i];
-      return crowd;
-    }
-  }  
+//   for (var i = 0; i < available_crowds.length; i++) {
+//     if (available_crowds[i].id === crowd_id) {
+//       var message = available_crowds[i].addMessage(new_message.user_id, new_message.name, new_message.content);
+//       var crowd = available_crowds[i];
+//       return crowd;
+//     }
+//   }  
 
-  return false;
-}
+//   return false;
+// }
 
-// get crowd at new users location or create crowd with lone user or return null
-function getCrowd (new_user) {
+// // get crowd at new users location or create crowd with lone user or return null
+// function getCrowd (new_user) {
 
-  for (var i = 0; i < available_crowds.length; i++) {
-    if (new_user.distance_from(available_crowds[i]) < 1) {
-      var crowd = available_crowds[i].addUser(new_user);
-      return [crowd, "update"];
-    }
-  }
+//   for (var i = 0; i < available_crowds.length; i++) {
+//     if (new_user.distance_from(available_crowds[i]) < 1) {
+//       var crowd = available_crowds[i].addUser(new_user);
+//       return [crowd, "update"];
+//     }
+//   }
 
-  for (var i = 0; i < lone_users.length; i++) {
-    if (new_user.distance_from(lone_users[i]) < 1) {
-      var found_user = lone_users.splice(i,1)[0];
-      var midpoint_location = DetermineMidPoint(found_user.location, new_user.location)
-      var new_crowd = new Crowd(midpoint_location, [found_user, new_user]);
-      for (var i = 0; i < new_crowd.users.length; i++) {
-        clients[new_crowd.users[i].sid].join(new_crowd.id);
-      }
-      available_crowds.push(new_crowd)
-      return [new_crowd, "new"];
-    }
-  }
+//   for (var i = 0; i < lone_users.length; i++) {
+//     if (new_user.distance_from(lone_users[i]) < 1) {
+//       var found_user = lone_users.splice(i,1)[0];
+//       var midpoint_location = DetermineMidPoint(found_user.location, new_user.location)
+//       var new_crowd = new Crowd(midpoint_location, [found_user, new_user]);
+//       for (var i = 0; i < new_crowd.users.length; i++) {
+//         clients[new_crowd.users[i].sid].join(new_crowd.id);
+//       }
+//       available_crowds.push(new_crowd)
+//       return [new_crowd, "new"];
+//     }
+//   }
   
-  lone_users.push(new_user);
-  return [null, "none"];  
-}
+//   lone_users.push(new_user);
+//   return [null, "none"];  
+// }
 
 
-// determine midpoint between two location objects
-function DetermineMidPoint (location1, location2) {
+// // determine midpoint between two location objects
+// function DetermineMidPoint (location1, location2) {
 
-  var lat1 = location1.latitude;
-  var lon1 = location1.longitude;
-  var lat2 = location2.latitude;
-  var lon2 = location2.longitude;
+//   var lat1 = location1.latitude;
+//   var lon1 = location1.longitude;
+//   var lat2 = location2.latitude;
+//   var lon2 = location2.longitude;
   
-  var x2 = lon2-lon1;
-  var dLon = x2.toRad();
+//   var x2 = lon2-lon1;
+//   var dLon = x2.toRad();
 
-  lat1 = lat1.toRad();
-  lat2 = lat2.toRad();
-  lon1 = lon1.toRad();
-  lon2 = lon2.toRad();
+//   lat1 = lat1.toRad();
+//   lat2 = lat2.toRad();
+//   lon1 = lon1.toRad();
+//   lon2 = lon2.toRad();
 
-  var Bx = Math.cos(lat2) * Math.cos(dLon);
-  var By = Math.cos(lat2) * Math.sin(dLon);
-  var lat3 = Math.atan2(Math.sin(lat1) + Math.sin(lat2), Math.sqrt((Math.cos(lat1) + Bx) * (Math.cos(lat1) + Bx) + By * By));
-  var lon3 = lon1 + Math.atan2(By, Math.cos(lat1) + Bx);
+//   var Bx = Math.cos(lat2) * Math.cos(dLon);
+//   var By = Math.cos(lat2) * Math.sin(dLon);
+//   var lat3 = Math.atan2(Math.sin(lat1) + Math.sin(lat2), Math.sqrt((Math.cos(lat1) + Bx) * (Math.cos(lat1) + Bx) + By * By));
+//   var lon3 = lon1 + Math.atan2(By, Math.cos(lat1) + Bx);
 
-  return {
-    latitude: lat3.toDeg(),
-    longitude: lon3.toDeg()
-  }
-}
+//   return {
+//     latitude: lat3.toDeg(),
+//     longitude: lon3.toDeg()
+//   }
+// }
