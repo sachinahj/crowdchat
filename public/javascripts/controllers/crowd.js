@@ -67,10 +67,22 @@ angular_app.controller('CrowdController', function ($scope, $location, userServi
             $scope.users[i].location.latitude,
             $scope.users[i].location.longitude
           );
-          var markerImage = {
-            url: "images/person2.png",
-            scaledSize: new google.maps.Size(20, 20)
-          };
+
+          if ($scope.users[i].id === $scope.user.id) {
+            console.log("$scope.users[i].id", $scope.users[i].id);
+            console.log("$scope.user.id", $scope.user.id);
+            var markerImage = {
+              url: "images/person.png",
+              scaledSize: new google.maps.Size(20, 20)
+            };
+          } else {
+            var markerImage = {
+              url: "images/person2.png",
+              scaledSize: new google.maps.Size(20, 20)
+            };
+          }
+
+
           var markerObject = new google.maps.Marker({
             position: markerCenter,
             map: map,
