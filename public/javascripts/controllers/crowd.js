@@ -1,7 +1,7 @@
 angular_app.controller('CrowdController', function ($scope, $location, userService, crowdService) {
   
 
-  $scope.tab = 'map';
+  $scope.tab = 'messages';
   $scope.new_message = "";
   $scope.user = userService.getUser();
   $scope.crowd = crowdService.getCrowd();
@@ -42,54 +42,65 @@ angular_app.controller('CrowdController', function ($scope, $location, userServi
 
   // $scope.mapInitialize = function () {
   $scope.mapInit = function() {
-      console.log("running this");
+      $scope.tab = 'map';
+
+      
+      console.log("running mapInit");
       console.log(document.getElementById('map-canvas'));
 
-      var center = new google.maps.LatLng(30.2709151,-97.7449491);
-      var mapOptions = {
-        center: center,
-        zoom: 14,
-      };
+      setTimeout(function () {
 
-      var map = new google.maps.Map(document.getElementById('map-canvas'),
-          mapOptions);
+        var center = new google.maps.LatLng(30.2709151,-97.7449491);
+        var mapOptions = {
+          center: center,
+          zoom: 14,
+        };
+
+        var map = new google.maps.Map(document.getElementById('map-canvas'),
+            mapOptions);
 
 
-      var markerLatLng = new google.maps.LatLng(30.2709151,-97.7449491);
-      var image = {
-        url: "images/person2.png",
-        scaledSize: new google.maps.Size(20, 20)
-      };
-      var marker = new google.maps.Marker({
-          position: markerLatLng,
+        var markerLatLng = new google.maps.LatLng(30.2709151,-97.7449491);
+        var image = {
+          url: "images/person2.png",
+          scaledSize: new google.maps.Size(20, 20)
+        };
+        var marker = new google.maps.Marker({
+            position: markerLatLng,
+            map: map,
+            title:"Hello World!",
+            icon: image,
+        });
+
+        var markerLatLng2 = new google.maps.LatLng(30.2709151,-97.744);
+        var image2 = {
+          url: "images/person2.png",
+          scaledSize: new google.maps.Size(20, 20)
+        };
+        var marker2 = new google.maps.Marker({
+            position: markerLatLng2,
+            map: map,
+            title:"Hello World!",
+            icon: image2,
+        });
+
+        var circleOptions = {
+          strokeColor: '#FF0000',
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: '#FF0000',
+          fillOpacity: 0.35,
           map: map,
-          title:"Hello World!",
-          icon: image,
-      });
+          center: center,
+          radius: 1000
+        }; 
+        var cityCircle = new google.maps.Circle(circleOptions);
 
-      var markerLatLng2 = new google.maps.LatLng(30.2709151,-97.744);
-      var image2 = {
-        url: "images/person2.png",
-        scaledSize: new google.maps.Size(20, 20)
-      };
-      var marker2 = new google.maps.Marker({
-          position: markerLatLng2,
-          map: map,
-          title:"Hello World!",
-          icon: image2,
-      });
+        
+        return true;
 
-      var circleOptions = {
-        strokeColor: '#FF0000',
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        fillColor: '#FF0000',
-        fillOpacity: 0.35,
-        map: map,
-        center: center,
-        radius: 1000
-      }; 
-      var cityCircle = new google.maps.Circle(circleOptions);
+      }, 0);
+
 
   }
 
