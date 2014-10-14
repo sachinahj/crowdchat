@@ -1,3 +1,5 @@
+var Crowd = require('../entities/crowd');
+
 // to rad prototype function
 Number.prototype.toRad = function() {
    return this * Math.PI / 180;
@@ -6,6 +8,10 @@ Number.prototype.toRad = function() {
 Number.prototype.toDeg = function() {
    return this * 180 / Math.PI;
 }
+
+
+var lone_users = [];
+var available_crowds = [];
 
 
 // delete user from crowd and return updated crowd, disband crowd if only 1 user
@@ -86,7 +92,7 @@ var getCrowd = function (new_user) {
       var midpoint_location = DetermineMidPoint(found_user.location, new_user.location)
       var new_crowd = new Crowd(midpoint_location, [found_user, new_user]);
       for (var i = 0; i < new_crowd.users.length; i++) {
-        clients[new_crowd.users[i].sid].join(new_crowd.id);
+        global.clients[new_crowd.users[i].sid].join(new_crowd.id);
       }
       available_crowds.push(new_crowd)
       return [new_crowd, "new"];

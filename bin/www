@@ -2,15 +2,12 @@
 var debug = require('debug')('twitter-crowd');
 var app = require('../app');
 var io = require('socket.io');
-var clients = {};
-var lone_users = [];
-var available_crowds = [];
 
 
 
 var helper = require('../entities/helper');
+
 var User = require('../entities/user');
-var Crowd = require('../entities/crowd');
 
 app.set('port', process.env.PORT || 3000);
 
@@ -28,6 +25,9 @@ var server = app.listen(app.get('port'), function() {
 // }
 
 
+// var clients = {};
+// var lone_users = [];
+// var available_crowds = [];
 // var crowds_counter = 1;
 // var users_counter = 1;
 
@@ -85,13 +85,12 @@ var server = app.listen(app.get('port'), function() {
 //     return message;
 //   }
 // };
-
-
+global.clients = {};
 // socket stuff
 var sio = io.listen(server);
 sio.sockets.on('connection', function (socket) {
   console.log('a socket connected: ' + socket.id);
-  clients[socket.id] = socket;
+  global.clients[socket.id] = socket;
 
   // on new user
   socket.on('newUser', function (new_user) {
@@ -109,7 +108,7 @@ sio.sockets.on('connection', function (socket) {
 
     } else if (crowd_type === "update") {
 
-      clients[new_user.sid].join(crowd.id);
+      global.clients[new_user.sid].join(crowd.id);
       socket.emit('crowdAvailable', crowd);
       sio.sockets.to(crowd.id).emit('crowdUpdate', crowd);
 
