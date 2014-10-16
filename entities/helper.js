@@ -1,3 +1,4 @@
+// require crowd constructor object
 var Crowd = require('../entities/crowd');
 
 // to rad prototype function
@@ -9,7 +10,7 @@ Number.prototype.toDeg = function() {
    return this * 180 / Math.PI;
 }
 
-
+// local dbs
 var lone_users = [];
 var available_crowds = [];
 
@@ -111,8 +112,7 @@ var getCrowd = function (new_user) {
 
 
 
-
-
+// export all functions
 module.exports.deleteUserInCrowdFromSid = deleteUserInCrowdFromSid;
 module.exports.createMessageForCrowd = createMessageForCrowd;
 module.exports.getCrowd = getCrowd;

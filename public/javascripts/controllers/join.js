@@ -33,13 +33,12 @@ angular_app.controller('JoinController', function ($scope, $location, userServic
 
       var location_template =  "<iframe " +
         "width='250' " +
-        "height='300' " +
+        "height='250' " +
         "frameborder='0' style='border:0' " +
         "src='https://www.google.com/maps/embed/v1/place?key=AIzaSyCOnpZgn-7iSwcokSBUF8qM-BC2kbrC-v8" +
         "&q=" + location.latitude + "," + location.longitude + "'>" +
         "</iframe>";
-      
-      $('#current_location_map').html(location_template);
+      $('#current-location-map-container').html(location_template);
       $scope.$apply(function () {
         $scope.step = "displaying_map"
       });

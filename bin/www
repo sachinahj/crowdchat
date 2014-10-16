@@ -14,7 +14,6 @@ var server = app.listen(app.get('port'), function() {
 });
 
 
-
 // socket stuff
 global.clients = {};
 var sio = io.listen(server);
@@ -24,6 +23,9 @@ sio.sockets.on('connection', function (socket) {
   console.log('a socket connected: ' + socket.id);
   global.clients[socket.id] = socket;
 
+  socket.on('ping', function () {
+    socket.emit('pong');
+  });
 
   // on new user
   socket.on('newUser', function (new_user) {

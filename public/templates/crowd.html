@@ -1,14 +1,37 @@
+<div class="row top-bar">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <center>
+      <div class="row">
+        <img class="top-bar-logo" src="/images/logo.png" />
+      </div>
+    </center>
+  </div>
+</div>
+
+
+
+
 <div class="row">
-  <div class="col-md-9 col-sm-9 col-xs-9 pull-left">
-    <div class="btn-group">
-      <button type="button" class="btn btn-default" ng-class="{active:tab==='users'}" ng-click="tab='users'">Users</button>
-      <button type="button" class="btn btn-default" ng-class="{active:tab==='messages'}" ng-click="tab='messages'">Messages</button>
-      <button type="button" class="btn btn-default" ng-class="{active:tab==='map'}" ng-click="mapInit()">Map</button>
+
+  <div class="col-md-6 col-sm-6 col-xs-6 pull-right">
+    <div class="btn-group pull-right">
+      <button class="btn btn-default btn-md dropdown-toggle" type="button" data-toggle="dropdown">
+        {{tab}} <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        <li class="dropdown-item text-center" ng-click="tab='users'">Users</li>
+        <li class="divider"></li>
+        <li class="dropdown-item text-center" ng-click="tab='messages'">Messages</li>
+        <li class="divider"></li>
+        <li class="dropdown-item text-center" ng-click="tab='map'">Map</li>
+      </ul>
     </div>
   </div>
-  <div class="col-md-3 col-sm-3 col-xs-3">
-    <h5 class="text-right">{{user.name}} [{{crowd.id}}]</h5>
-  </div>  
+
+  <div class="col-md-6 col-sm-6 col-xs-6 pull-right">
+    <h4>Crowd Size: {{ users.length }}</h4>
+  </div>
+
 </div>
 
 <div class="row" ng-show="tab === 'users'">
