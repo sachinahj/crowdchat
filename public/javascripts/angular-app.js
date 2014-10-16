@@ -1,5 +1,6 @@
 var angular_app = angular.module('angular_app', [ 'ngRoute' ]);
 
+// routes
 angular_app.config(function ($routeProvider) {
   $routeProvider
     .when('/home',
@@ -30,7 +31,7 @@ angular_app.config(function ($routeProvider) {
     .otherwise( {redirectTo: '/home'} );
 });
 
-
+// directive to focus on text fields
 angular_app.directive('focus', function ($timeout) {
   return {
     scope : {
@@ -48,7 +49,7 @@ angular_app.directive('focus', function ($timeout) {
   };
 }); 
 
-
+// service to store User's info
 angular_app.service('userService', function () {
   var user = {};
   // user = JSON.parse('{"name":"sdfs","sid":"hugn6ox8YxfqD2WNAAAL","location":{"latitude":30.267136699999995,"longitude":-97.749625,"accuracy":45}}');
@@ -62,7 +63,7 @@ angular_app.service('userService', function () {
   }
 });
 
-
+// service to store User's Crowd's Info
 angular_app.service('crowdService', function () {
   var crowd = {};
   // crowd = JSON.parse('{"id":1,"location":{"latitude":30.26713205000057,"longitude":-97.74961274999943},"users":[{"name":"safhin","sid":"tCDBCRfvFcy66PQsAAAJ","location":{"latitude":30.2671274,"longitude":-97.7496005,"accuracy":47}},{"name":"sdfs","sid":"hugn6ox8YxfqD2WNAAAL","location":{"latitude":30.267136699999995,"longitude":-97.749625,"accuracy":45}},{"name":"sdfs","sid":"hugn6ox8YxfqD2WNAAAL","location":{"latitude":30.267136699999995,"longitude":-97.749625,"accuracy":45}},{"name":"sdfs","sid":"hugn6ox8YxfqD2WNAAAL","location":{"latitude":30.267136699999995,"longitude":-97.749625,"accuracy":45}},{"name":"sdfs","sid":"hugn6ox8YxfqD2WNAAAL","location":{"latitude":30.267136699999995,"longitude":-97.749625,"accuracy":45}},{"name":"sdfs","sid":"hugn6ox8YxfqD2WNAAAL","location":{"latitude":30.267136699999995,"longitude":-97.749625,"accuracy":45}},{"name":"sdfs","sid":"hugn6ox8YxfqD2WNAAAL","location":{"latitude":30.267136699999995,"longitude":-97.749625,"accuracy":45}},{"name":"sdfs","sid":"hugn6ox8YxfqD2WNAAAL","location":{"latitude":30.267136699999995,"longitude":-97.749625,"accuracy":45}},{"name":"sdfs","sid":"hugn6ox8YxfqD2WNAAAL","location":{"latitude":30.267136699999995,"longitude":-97.749625,"accuracy":45}}],"messages":[]}');
@@ -75,6 +76,7 @@ angular_app.service('crowdService', function () {
     return crowd;
   }
 
+  // update crowd on user add or delete
   socket.on("crowdUpdate", function (updated_crowd) {
     console.log("on crowdUpdate", updated_crowd);
     crowd = updated_crowd;

@@ -28,11 +28,23 @@ angular_app.controller('CrowdController', function ($scope, $location, userServi
     return true;
   }
 
+
+  socket.on("newMessage", function (update_crowd) {
+    $scope.$apply(function () {
+      $scope.crowd = crowdService.getCrowd();
+      $scope.messages = $scope.crowd.messages;
+  
+      if ($scope.crowd.id === undefined) {
+        $location.path('/alone');
+      }
+    });
+  });
+
+
   socket.on("crowdUpdate", function (update_crowd) {
     $scope.$apply(function () {
       $scope.crowd = crowdService.getCrowd();
       $scope.users = $scope.crowd.users;
-      $scope.messages = $scope.crowd.messages;
       if ($scope.tab === 'map') {
         $scope.mapInit();
       }
@@ -43,7 +55,6 @@ angular_app.controller('CrowdController', function ($scope, $location, userServi
   });
 
 
-  // $scope.mapInitialize = function () {
   $scope.mapInit = function() {
       $scope.tab = 'map';
 

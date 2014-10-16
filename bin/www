@@ -24,15 +24,20 @@ sio.sockets.on('connection', function (socket) {
   console.log('a socket connected: ' + socket.id);
   global.clients[socket.id] = socket;
 
+
   // on new user
   socket.on('newUser', function (new_user) {
     new_user = new User(new_user, socket.id);
     socket.emit('userCreated', new_user);
     
+    // find which crowd to put user in
     var selected_crowd = helper.getCrowd(new_user);
     var crowd = selected_crowd[0];
     var crowd_type = selected_crowd[1];
 
+
+    // respond back to user depending on which crowd found
+    // respond back to all users in crowd with updated crowd
     if (crowd_type === "new") {
       for (var i = 0; i < crowd.users.length; i++) {
         global.clients[crowd.users[i].sid].join(crowd.id);
@@ -54,15 +59,12 @@ sio.sockets.on('connection', function (socket) {
 
   // on create new message
   socket.on('createNewMessage', function (new_message) {
+    // add message to crowd and emit return updated crowd
     var crowd_id = new_message.crowd_id;
     var crowd = helper.createMessageForCrowd(new_message, crowd_id);
-    sio.sockets.to(crowd.id).emit('crowdUpdate', crowd); // change to newMessage
+    sio.sockets.to(crowd.id).emit('crowdUpdate', crowd); 
+    sio.sockets.to(crowd.id).emit('newMessage');
   });
-
-
-
-
-
 
 
   // on disconnect
