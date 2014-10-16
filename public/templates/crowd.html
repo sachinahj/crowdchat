@@ -45,22 +45,31 @@
 
 <div class="row" ng-show="tab === 'messages'">
   <div class="col-md-12 col-sm-12 col-xs-12">
-    <div class="row">
-      <div class="col-md-12 col-sm-12 col-xs-12">
-        <h3><u>Messages</u></h3>
-        <div id="messages-window">
-          <h4 class="text-right" ng-repeat="message in messages">{{message.name}}: {{message.content}}</h4>
+    <div class="row scrollme">
+      <div id="messages-window" class="col-md-12 col-sm-12 col-xs-12 no-padding">
+
+        <div class="message" ng-repeat="message in messages">
+          <h4 class="text-left">{{message.name}}</h4>
+          <p>{{message.content}}</p>
         </div>
+
+        <a id="bottom" ng-hide="true"></a>
+
+
       </div>
     </div>
-    <div class="row">
+
+
+    <div id="message-bar" class="row">
       <div class="col-md-12 col-sm-12 col-xs-12">
         <form ng-submit"sendMessage()">
-          <button type="submit" id="new-message-submit-button" class="btn btn-primary btn-xs pull-right" ng-click="sendMessage()">SEND</button>
+          <button type="submit" id="new-message-submit-button" class="btn btn-primary btn-xs pull-right submit-button" ng-click="sendMessage()">SEND</button>
           <input type="text" id="new-message-input" ng-model="new_message">
         </form>
       </div>
     </div>
+
+
   </div>
 </div>
 

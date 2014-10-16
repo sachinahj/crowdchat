@@ -10,7 +10,7 @@ angular_app.controller('FoundController', function ($scope, $location, userServi
     $scope.$apply(function () {
       $location.path('/crowd');
     });
-  }, 3000);
+  }, 1500);
 
 
   $scope.clearInfo = function () {

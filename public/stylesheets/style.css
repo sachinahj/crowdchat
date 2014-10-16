@@ -121,26 +121,35 @@ textarea:focus, input:focus, input[type]:focus, .uneditable-input:focus {
 
 
 
-
-
-
-
-#users-window, #messages-window {
-  height: 300px;
-  overflow-y: scroll;
-  border: 1px solid black;
-  margin-bottom: 1em;
+#message-bar {
+  position: relative;
+  bottom: 0;
+  background-color: #eb4f41;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
-#new-message-submit-button { 
-  font-weight: bold;
-  height: 35px;
-  width: 30%;
+#users-window, #messages-window {
+  height: 302px;
+  overflow-y: scroll;
+  border-top: 2px solid #eb4f41;
+  border-bottom: 2px solid #eb4f41;
+
+}
+.message {
+  border-top: 1px solid #eb4f41;
+  border-bottom: 1px solid #eb4f41;
+  text-indent: 20px;
 }
 #new-message-input {
-  width: 70%;
-  font-size: 1em;
-  line-height: 30px;
+  width: 210px;
 }
+#new-message-submit-button { 
+  height: 30px;
+}
+
+
+
+
 #map-canvas {
   height: 300px; 
   margin: 0; 

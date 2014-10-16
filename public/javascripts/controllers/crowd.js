@@ -1,4 +1,4 @@
-angular_app.controller('CrowdController', function ($scope, $location, userService, crowdService) {
+angular_app.controller('CrowdController', function ($scope, $location, userService, crowdService, $anchorScroll) {
   
 
   $scope.tab = 'messages';
@@ -10,6 +10,9 @@ angular_app.controller('CrowdController', function ($scope, $location, userServi
 
   if ($scope.crowd.id === undefined || $scope.user.sid === undefined ) {
     $location.path('/alone');
+  } else {
+    var objDiv = document.getElementById("messages-window");
+    objDiv.scrollTop = objDiv.scrollHeight + 71;
   }
   
   $scope.sendMessage = function () {
@@ -33,11 +36,12 @@ angular_app.controller('CrowdController', function ($scope, $location, userServi
     $scope.$apply(function () {
       $scope.crowd = crowdService.getCrowd();
       $scope.messages = $scope.crowd.messages;
-  
       if ($scope.crowd.id === undefined) {
         $location.path('/alone');
       }
     });
+    var objDiv = document.getElementById("messages-window");
+    objDiv.scrollTop = objDiv.scrollHeight + 71;
   });
 
 
