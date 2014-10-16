@@ -44,7 +44,7 @@ sio.sockets.on('connection', function (socket) {
 
       global.clients[new_user.sid].join(crowd.id);
       socket.emit('crowdAvailable', true);
-      sio.sockets.to(crowd.id).emit('crowdUpdate', crowd);
+      sio.sockets.to(crowd.id).emit('crowdUpdate', crowd); 
 
     } else {
 
@@ -56,7 +56,7 @@ sio.sockets.on('connection', function (socket) {
   socket.on('createNewMessage', function (new_message) {
     var crowd_id = new_message.crowd_id;
     var crowd = helper.createMessageForCrowd(new_message, crowd_id);
-    sio.sockets.to(crowd.id).emit('crowdUpdate', crowd);
+    sio.sockets.to(crowd.id).emit('crowdUpdate', crowd); // change to newMessage
   });
 
 

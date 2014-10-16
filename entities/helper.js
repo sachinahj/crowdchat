@@ -94,7 +94,6 @@ var getCrowd = function (new_user) {
       return [crowd, "update"];
     }
   }
-  console.log("lone_users", lone_users);
   for (var i = 0; i < lone_users.length; i++) {
     if (new_user.distance_from(lone_users[i]) < 1) {
       var found_user = lone_users.splice(i,1)[0];
