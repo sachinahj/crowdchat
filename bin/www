@@ -8,8 +8,8 @@ var helper = require('../entities/helper');
 var User = require('../entities/user');
 
 // serve
-app.set('port', process.env.PORT || 3000);
-var server = app.listen(app.get('port'), function() {
+// app.set('port', process.env.PORT || 3000);
+var server = app.listen(process.env.PORT || 3000, function() {
   debug('Express server listening on port ' + server.address().port);
 });
 
