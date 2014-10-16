@@ -87,12 +87,12 @@ angular_app.controller('CrowdController', function ($scope, $location, userServi
             console.log("$scope.users[i].id", $scope.users[i].id);
             console.log("$scope.user.id", $scope.user.id);
             var markerImage = {
-              url: "images/person.png",
+              url: "images/user-person.png",
               scaledSize: new google.maps.Size(20, 20)
             };
           } else {
             var markerImage = {
-              url: "images/person2.png",
+              url: "images/crowd-person-red.png",
               scaledSize: new google.maps.Size(20, 20)
             };
           }
@@ -107,11 +107,11 @@ angular_app.controller('CrowdController', function ($scope, $location, userServi
 
         // draw circle
         var crowdCircleOptions = {
-          strokeColor: '#0080ff',
-          strokeOpacity: 0.8,
+          strokeColor: '#a5d2fd',
+          strokeOpacity: 1.0,
           strokeWeight: 2,
-          fillColor: '#0080ff',
-          fillOpacity: 0.35,
+          fillColor: '#a5d2fd',
+          fillOpacity: 0.40,
           map: map,
           center: center,
           radius: 1000

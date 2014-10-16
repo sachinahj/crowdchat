@@ -23,29 +23,28 @@
         <li class="divider"></li>
         <li class="dropdown-item text-center" ng-click="tab='messages'">Messages</li>
         <li class="divider"></li>
-        <li class="dropdown-item text-center" ng-click="tab='map'">Map</li>
+        <li class="dropdown-item text-center" ng-click="mapInit()">Map</li>
       </ul>
     </div>
   </div>
 
   <div class="col-md-6 col-sm-6 col-xs-6 pull-right">
-    <h4>Crowd Size: {{ users.length }}</h4>
+    <h4>Crowd Size:<br>
+    {{ users.length }}</h4>
   </div>
 
 </div>
 
 <div class="row" ng-show="tab === 'users'">
-  <div class="col-md-12 col-sm-12 col-xs-12">
-    <h3><u>Users</u></h3>
-    <div id="users-window">
-      <h4 class="text-right" ng-repeat="user in users">{{user.name}}</h4>
-    </div>
+  <div id="users-window" class="col-md-12 col-sm-12 col-xs-12 no-padding">
+      <h4 class="text-left user" ng-repeat="user in users">{{user.name}}</h4>
   </div>
 </div>
 
 <div class="row" ng-show="tab === 'messages'">
   <div class="col-md-12 col-sm-12 col-xs-12">
-    <div class="row scrollme">
+
+    <div class="row">
       <div id="messages-window" class="col-md-12 col-sm-12 col-xs-12 no-padding">
 
         <div class="message" ng-repeat="message in messages">
@@ -60,11 +59,11 @@
     </div>
 
 
-    <div id="message-bar" class="row">
-      <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12" id="message-bar">
         <form ng-submit"sendMessage()">
           <button type="submit" id="new-message-submit-button" class="btn btn-primary btn-xs pull-right submit-button" ng-click="sendMessage()">SEND</button>
-          <input type="text" id="new-message-input" ng-model="new_message">
+          <input type="text" id="new-message-input" placeholder="Message..." ng-model="new_message">
         </form>
       </div>
     </div>
@@ -75,7 +74,6 @@
 
 <div class="row" ng-show="tab === 'map'">
   <div class="col-md-12 col-sm-12 col-xs-12">
-    <h3><u>Map</u></h3>
     <div id="map-canvas"></div>
   </div>
 </div>
