@@ -1,0 +1,50 @@
+#crowd-surf-map-canvas {
+  height: 450px;
+  width: 900px;
+}
+#crowd-surf-start-button {
+  margin: 10px 30px 0px 0px;
+  z-index: 2;
+}
+#crowd-surf-map-canvas {
+  border: 1px solid #eb4f41;
+}
+
+
+.top-bar {
+  background-color: #eb4f41; 
+  box-shadow: 0px 5px 5px #191919;
+  height: 50px;
+  margin-bottom: 20px;
+}
+.top-bar-logo {
+  height: 25px;
+  margin-top: 10px;
+  margin-left: 30px;
+}
+.submit-button {
+  background-color: white;
+  border: 2px solid #eb4f41;
+  box-shadow: 0px 2px 5px #191919;
+  color: #eb4f41;
+  font-weight: 700;
+}
+.submit-button:hover {
+  border: none !important;
+  outline: none !important;
+  background-color: #eb4f41;
+  color: white;
+}
+.submit-button:active {
+  background-color: #eb4f41;
+  border: none !important;
+  outline: none !important;
+  color: white;
+}
+.submit-button:focus {
+  background-color: #eb4f41;
+  border: none !important;
+  outline: none !important;
+  color: white;
+}
+

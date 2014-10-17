@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="angular_app">
+<html>
   <head>
     <title>CrowdChat</title>
 
@@ -8,17 +8,29 @@
     <meta content="minimum-scale=1.0, width=device-width, maximum-scale=1, user-scalable=no" name="viewport" />
 
     <link rel='stylesheet' href='stylesheets/bootstrap/bootstrap.css' />
-    <!-- <link rel='stylesheet' href='stylesheets/style.css' /> -->
+    <link rel='stylesheet' href='stylesheets/crowd-surf.css' />
 
   </head>
   <body>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3 col-sm-2 col-xs-0"></div>
-            <div class="col-md-6 col-sm-8 col-xs-12">TEST</div>
-            <div class="col-md-3 col-sm-2 col-xs-0"></div>
+    <div class="row top-bar">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="row text-center">
+          <img class="top-bar-logo" src="/images/logo.png" />
+          <button type="submit" id="crowd-surf-start-button"class="btn btn-primary btn-sm pull-right submit-button" onclick="startSim()">START</button>
         </div>
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <center>
+              <div id="crowd-surf-map-canvas"></div>
+            </center>
+          </div>
+      </div>
     </div>
 
 
@@ -26,14 +38,97 @@
     <script type="text/javascript" src="javascripts/jquery-2.1.1.min.js"></script>
     <!-- bootstrap -->
     <script type="text/javascript" src="javascripts/bootstrap/bootstrap.js"></script>
-    <!-- angular -->
-    <script type="text/javascript" src="javascripts/angular.js"></script>
-    <script type="text/javascript" src="javascripts/angular-route.js"></script>
-    <!-- socket.io -->
     
     <!-- angular app and controllers -->
     <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCOnpZgn-7iSwcokSBUF8qM-BC2kbrC-v8">
+    </script>
+
+    <script type="text/javascript">
+
+
+      var center = new google.maps.LatLng(
+        30.267153,
+        -97.7430608
+      );
+
+      var mapOptions = {
+        center: center,
+        zoom: 14,
+      };
+
+      var map = new google.maps.Map(document.getElementById('crowd-surf-map-canvas'),mapOptions);
+
+
+
+      var startSim = function () {
+
+        var bounds = map.getBounds();
+
+        north_lat = bounds.getNorthEast().lat();
+        south_lat = bounds.getSouthWest().lat();
+
+        east_lng = bounds.getNorthEast().lng();
+        west_lng = bounds.getSouthWest().lng();
+
+        var person_count = 0
+
+        
+        placePerson()
+
+
+
+
+
+
+
+
+
+        function placePerson () {
+
+          var rand_lat = (Math.random() * (north_lat - south_lat) + south_lat).toFixed(6);
+          var rand_lng = (Math.random() * (east_lng - west_lng) + west_lng).toFixed(6);
+          var rand_image = Math.floor((Math.random() * 3) + 0);
+          var icon_image_names = [
+            "crowd-person-red",
+            "crowd-person",
+            "user-person"
+          ];
+
+
+          var new_person_center = new google.maps.LatLng(
+            rand_lat,
+            rand_lng
+          );
+
+          var new_person_icon = {
+            url: "images/" + icon_image_names[rand_image] + ".png",
+            scaledSize: new google.maps.Size(20, 20)
+          };
+
+          var markerObject = new google.maps.Marker({
+            position: new_person_center,
+            map: map,
+            icon: new_person_icon
+          });
+          person_count += 1
+          // console.log("person placed", person_count);
+
+          
+          setTimeout(function () {
+
+            if (person_count < 3000) {
+              placePerson()
+            }
+
+          }, 0);
+
+        }
+
+
+      }
+
+
     </script>
 
 
