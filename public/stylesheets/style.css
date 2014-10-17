@@ -36,13 +36,21 @@ a {
   font-weight: 700;
 }
 .submit-button:hover {
-  border: none;
+  border: none !important;
+  outline: none !important;
   background-color: #eb4f41;
   color: white;
 }
 .submit-button:active {
-  border: none;
   background-color: #eb4f41;
+  border: none !important;
+  outline: none !important;
+  color: white;
+}
+.submit-button:focus {
+  background-color: #eb4f41;
+  border: none !important;
+  outline: none !important;
   color: white;
 }
 

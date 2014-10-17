@@ -1,12 +1,53 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="angular_app">
   <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <title>CrowdChat</title>
+
+    <!-- <meta name="viewport" content="width=device-width, user-scalable=no" /> -->
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="minimum-scale=1.0, width=device-width, maximum-scale=1, user-scalable=no" name="viewport" />
+
+    <link rel='stylesheet' href='stylesheets/bootstrap/bootstrap.css' />
+    <link rel='stylesheet' href='stylesheets/style.css' />
+
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-    
-  </body>
+
+    <div class="container full-height">
+        <div class="row full-height">
+            <div class="col-md-3 col-sm-2 col-xs-0"></div>
+            <div id="app-screen" class="col-md-6 col-sm-8 col-xs-12 full-height">
+                <div class="full-height" ng-view></div>
+            </div>
+            <div class="col-md-3 col-sm-2 col-xs-0"></div>
+        </div>
+    </div>
+
+
+    <!-- jquery -->
+    <script type="text/javascript" src="javascripts/jquery-2.1.1.min.js"></script>
+    <!-- bootstrap -->
+    <script type="text/javascript" src="javascripts/bootstrap/bootstrap.js"></script>
+    <!-- angular -->
+    <script type="text/javascript" src="javascripts/angular.js"></script>
+    <script type="text/javascript" src="javascripts/angular-route.js"></script>
+    <!-- socket.io -->
+    <script type="text/javascript" src="https://cdn.socket.io/socket.io-1.1.0.js"></script>
+    <script type="text/javascript">
+      var socket = io.connect(window.location.hostname);
+    </script>
+    <!-- angular app and controllers -->
+    <script type="text/javascript" src="javascripts/angular-app.js"></script>
+    <script type="text/javascript" src="javascripts/controllers/home.js"></script>
+    <script type="text/javascript" src="javascripts/controllers/join.js"></script>
+    <script type="text/javascript" src="javascripts/controllers/crowd.js"></script>
+    <script type="text/javascript" src="javascripts/controllers/alone.js"></script>
+    <script type="text/javascript" src="javascripts/controllers/found.js"></script>
+
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCOnpZgn-7iSwcokSBUF8qM-BC2kbrC-v8">
+    </script>
+
+
+  <body>
 </html>
