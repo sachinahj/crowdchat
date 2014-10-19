@@ -17,7 +17,7 @@
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="row text-center">
           <img class="top-bar-logo" src="/images/logo.png" />
-          <button type="submit" id="crowd-surf-start-button"class="btn btn-primary btn-sm pull-right submit-button" onclick="startSim()">START</button>
+          <button type="submit" id="crowd-surf-start-button"class="btn btn-primary btn-sm pull-right submit-button" onclick="createNewPerson()">START</button>
         </div>
       </div>
     </div>
@@ -36,6 +36,7 @@
 
     <!-- jquery -->
     <script type="text/javascript" src="javascripts/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="javascripts/underscore.js"></script>
     <!-- bootstrap -->
     <script type="text/javascript" src="javascripts/bootstrap/bootstrap.js"></script>
     
@@ -44,93 +45,193 @@
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCOnpZgn-7iSwcokSBUF8qM-BC2kbrC-v8">
     </script>
 
+    <script type="text/javascript" src="javascripts/crowd-surf/initialize_map.js"></script>
+    <script type="text/javascript" src="javascripts/crowd-surf/colors.js"></script>
+
     <script type="text/javascript">
 
+      var all_crowds = [];
 
-      var center = new google.maps.LatLng(
-        30.267153,
-        -97.7430608
-      );
+      var createNewPerson = function () {
 
-      var mapOptions = {
-        center: center,
-        zoom: 14,
-      };
+        window.map_bounds = google_map.getBounds();
+        window.map_zoom = google_map.getZoom();
 
-      var map = new google.maps.Map(document.getElementById('crowd-surf-map-canvas'),mapOptions);
+        var location = getRandomPersonLocation();
+        var user = new User(location);
+        user.place_marker();
+        var available_crowd = findCrowd(user);
 
+        if (available_crowd === null) {
 
+          var crowd = new Crowd(user);
+          crowd.draw_circle();
+          all_crowds.push(crowd);
 
-      var startSim = function () {
-
-        var bounds = map.getBounds();
-
-        north_lat = bounds.getNorthEast().lat();
-        south_lat = bounds.getSouthWest().lat();
-
-        east_lng = bounds.getNorthEast().lng();
-        west_lng = bounds.getSouthWest().lng();
-
-        var person_count = 0
-
-        
-        placePerson()
+        } else {
 
 
-
-
-
-
-
-
-
-        function placePerson () {
-
-          var rand_lat = (Math.random() * (north_lat - south_lat) + south_lat).toFixed(6);
-          var rand_lng = (Math.random() * (east_lng - west_lng) + west_lng).toFixed(6);
-          var rand_image = Math.floor((Math.random() * 3) + 0);
-          var icon_image_names = [
-            "crowd-person-red",
-            "crowd-person",
-            "user-person"
-          ];
-
-
-          var new_person_center = new google.maps.LatLng(
-            rand_lat,
-            rand_lng
-          );
-
-          var new_person_icon = {
-            url: "images/" + icon_image_names[rand_image] + ".png",
-            scaledSize: new google.maps.Size(20, 20)
-          };
-
-          var markerObject = new google.maps.Marker({
-            position: new_person_center,
-            map: map,
-            icon: new_person_icon
-          });
-          person_count += 1
-          // console.log("person placed", person_count);
-
-          
-          setTimeout(function () {
-
-            if (person_count < 3000) {
-              placePerson()
-            }
-
-          }, 0);
 
         }
 
+      }
+
+      // ENTITIES
+      // counters
+      var user_id_counter = 1;
+      var crowd_id_counter = 1;
+
+      // User entity
+      function User (location) {
+        // id
+        this.id = user_id_counter;
+        user_id_counter += 1;
+
+        // location attributes
+        this.location = location
+        
+        // map attributes and functions
+        this.marker = null;
+        this.place_marker = function () {
+          var center = new google.maps.LatLng(
+            this.location.latitude,
+            this.location.longitude
+          );
+          var icon = {
+            url: "images/crowd-person.png",
+            scaledSize: new google.maps.Size(map_zoom/2, map_zoom/2)
+          };
+          var marker = new google.maps.Marker({
+            position: center,
+            map: google_map,
+            icon: icon
+          });
+          this.marker = marker;
+          return true;
+        }
+        this.remove_marker = function () {
+          this.marker.setMap(null);
+          this.marker = null;
+          return true;
+        }
+
+      }
+
+      // Crowd entity
+      function Crowd (user) {
+        // id
+        this.id = crowd_id_counter;
+        crowd_id_counter += 1;
+
+        // users
+        this.users = [user];
+
+        // location attributes
+        this.location = user.location;
+        this.radius = 0.09144;
+        
+        // map attributes and functions
+        this.color = _.sample(colors, 1)[0];
+        this.circle = null;
+        this.draw_circle = function () {
+          var center = new google.maps.LatLng(
+            this.location.latitude,
+            this.location.longitude
+          );
+          var circle_options = {
+            strokeColor: this.color,
+            strokeOpacity: 1.0,
+            strokeWeight: 0.5,
+            fillColor: this.color,
+            fillOpacity: 0.25,
+            map: google_map,
+            center: center,
+            radius: (this.radius * 1000)
+          };
+          var circle = new google.maps.Circle(circle_options);
+          this.circle = circle;
+          return true;
+        }
+        this.remove_circle = function () {
+          this.circle.setMap(null);
+          this.circle = null;
+          return true;
+        }
 
       }
 
 
+
+
+
+
+
+
+
+
+      // HELPER FUNCTIONS
+
+      // to rad prototype function
+      Number.prototype.toRad = function() {
+         return this * Math.PI / 180;
+      }
+      // to deg prototype function
+      Number.prototype.toDeg = function() {
+         return this * 180 / Math.PI;
+      }
+
+      // get random location for new person
+      function getRandomPersonLocation () {
+        var north_lat = map_bounds.getNorthEast().lat();
+        var south_lat = map_bounds.getSouthWest().lat();
+        var east_lng = map_bounds.getNorthEast().lng();
+        var west_lng = map_bounds.getSouthWest().lng();
+        var rand_lat = (Math.random() * (north_lat - south_lat) + south_lat);
+        var rand_lng = (Math.random() * (east_lng - west_lng) + west_lng);
+
+        return {
+          latitude: rand_lat,
+          longitude: rand_lng
+        };
+      }
+
+      // find crowd within distance from user
+      function findCrowd (user) {
+        var all_crowds_length = all_crowds.length
+        var distance;
+        for (var i = 0; i < all_crowds_length; i++) {
+          distance = distanceBetweenUsersCrowds(user, all_crowds[i]);
+          console.log("distance" + i + ":  " + distance);
+        }
+        return null;
+      }
+
+      // distance formula between two lat/lng points
+      function distanceBetweenUsersCrowds (user_crowd_1, user_crowd_2) {
+        var lat1 = user_crowd_1.location.latitude;
+        var lon1 = user_crowd_1.location.longitude;
+        var lat2 = user_crowd_2.location.latitude;
+        var lon2 = user_crowd_2.location.longitude;
+        var R =  6371; // km 
+        var x1 = lat2-lat1;
+        var dLat = x1.toRad();  
+        var x2 = lon2-lon1;
+        var dLon = x2.toRad();  
+        var a = Math.sin(dLat/2) * Math.sin(dLat/2) + 
+                Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2);  
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+        var d = R * c; 
+        return d;
+      }
+
+
+
+
+
+
+
+
     </script>
-
-
   <body>
 </html>
