@@ -16,7 +16,7 @@
     <div class="row top-bar">
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="row text-center">
-          <p id="crowd-count" class="pull-left">Crowd Count: <span id="crowd-count-value">0</span></p>
+          <p id="crowd-count" class="pull-left">Max Crowd Count: <span id="crowd-count-value">0</span></p>
           <img class="top-bar-logo" src="/images/logo.png" />
           <button type="submit" id="crowd-surf-start-button"class="btn btn-primary btn-sm pull-right submit-button" onclick="startSim()">START</button>
         </div>
@@ -71,7 +71,7 @@
 
         setTimeout(function () {
           startSim();
-        }, 100)
+        }, 200)
 
         return true;
 
