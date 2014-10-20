@@ -53,7 +53,10 @@
       var all_crowds = [];
       var default_radius = 0.09144;
 
-      var createNewPerson = function () {
+
+
+
+      function createNewPerson () {
 
         window.map_bounds = google_map.getBounds();
         window.map_zoom = google_map.getZoom();
@@ -64,8 +67,6 @@
 
         var crowd = findCrowdForUser(user);
         var crowd = mergeCrowds(crowd);
-
-        crowd.draw_circle();
 
       }
 
@@ -262,6 +263,7 @@
           if (distance < (all_crowds[i].radius + default_radius)) {
             all_crowds[i].users.push(user);
             all_crowds[i].recalculate_location();
+            all_crowds[i].draw_circle();
 
             var crowd = all_crowds[i]
             return crowd;
@@ -269,6 +271,7 @@
         }
 
         var crowd = new Crowd(user);
+        crowd.draw_circle();
         all_crowds.push(crowd);
         return crowd;
       }
@@ -277,16 +280,32 @@
       function mergeCrowds(crowd) {
         var all_crowds_length = all_crowds.length;
         var distance;
+        var crowds_to_join = [];
+
         for (var i = 0; i < all_crowds_length; i++) {
-          if (all_crowds[i].id !== crowd.id) {
-            distance = distanceBetweenUsersCrowds(crowd, all_crowds[i]);
-            if (distance < (all_crowds[i].radius + crowd.radius)) {
-              console.log("in it", all_crowds[i]);
-            }
+          distance = distanceBetweenUsersCrowds(crowd, all_crowds[i]);
+          if (distance < (all_crowds[i].radius + crowd.radius)) {
+            crowds_to_join.push(all_crowds[i]);
           }
         }
 
+        if (crowds_to_join.length > 1) {
+          all_crowds = _.difference(all_crowds, crowds_to_join);
+          var crowds_to_join_length = crowds_to_join.length;
+          var big_crowd = crowds_to_join[0];
+
+          for (var i = 1; i < crowds_to_join_length; i++) {
+            crowds_to_join[i].remove_circle();
+            big_crowd.users = big_crowd.users.concat(crowds_to_join[i].users);
+          }
+          big_crowd.recalculate_location();
+          big_crowd.draw_circle();
+          all_crowds.push(big_crowd);
+          mergeCrowds(big_crowd);
+
+        }
         return crowd;
+
       }
 
 
