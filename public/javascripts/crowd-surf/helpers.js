@@ -19,12 +19,12 @@ Number.prototype.toDeg = function() {
 // get random location for new person
 function getRandomPersonLocation () {
 
-  var north_lat = map_bounds.getNorthEast().lat();
-  var south_lat = map_bounds.getSouthWest().lat();
-  var east_lng = map_bounds.getNorthEast().lng();
-  var west_lng = map_bounds.getSouthWest().lng();
-  var rand_lat = (Math.random() * (north_lat - south_lat) + south_lat);
-  var rand_lng = (Math.random() * (east_lng - west_lng) + west_lng);
+  var north_lat = map_bounds.getNorthEast().lat()
+    , south_lat = map_bounds.getSouthWest().lat()
+    , east_lng = map_bounds.getNorthEast().lng()
+    , west_lng = map_bounds.getSouthWest().lng()
+    , rand_lat = (Math.random() * (north_lat - south_lat) + south_lat)
+    , rand_lng = (Math.random() * (east_lng - west_lng) + west_lng);
 
   return {
     latitude: rand_lat,
@@ -120,7 +120,9 @@ function mergeCrowds(crowd) {
     big_crowd.recalculate_location();
     big_crowd.draw_circle();
     all_crowds.push(big_crowd);
-    mergeCrowds(big_crowd);
+    setTimeout(function () {
+      mergeCrowds(big_crowd);
+    }, 5000);
 
   }
 

@@ -1,7 +1,7 @@
 // ENTITIES
 // counters
-var user_id_counter = 1;
-var crowd_id_counter = 1;
+var user_id_counter = 1
+  , crowd_id_counter = 1;
 
 // User entity
 function User (location) {
@@ -59,12 +59,12 @@ function Crowd (user) {
 
   this.radius = default_radius;
   this.recalculate_location = function () {
-    var length = this.users.length;
+    var users_length = this.users.length
+      , x_sum = 0
+      , y_sum = 0
+      , z_sum = 0;
 
-    var x_sum = 0;
-    var y_sum = 0;
-    var z_sum = 0;
-    for (var i = 0; i < length; i++) {
+    for (var i = 0; i < users_length; i++) {
       x_sum +=  Math.cos(this.users[i].location.latitude.toRad()) * 
                 Math.cos(this.users[i].location.longitude.toRad());
 
@@ -73,17 +73,17 @@ function Crowd (user) {
 
       z_sum +=  Math.sin(this.users[i].location.latitude.toRad());
     }
-    x_sum = x_sum / length;
-    y_sum = y_sum / length;
-    z_sum = z_sum / length;
+    x_sum = x_sum / users_length;
+    y_sum = y_sum / users_length;
+    z_sum = z_sum / users_length;
     var hyp = Math.sqrt(x_sum * x_sum + y_sum * y_sum);
 
     this.location.latitude = Math.atan2(z_sum, hyp).toDeg();
     this.location.longitude = Math.atan2(y_sum, x_sum).toDeg();
 
-    var max_distance = 0;
-    var distance;
-    for (var i = 0; i < length; i++) {
+    var max_distance = 0
+      , distance;
+    for (var i = 0; i < users_length; i++) {
       distance = distanceBetweenUsersCrowds(this, this.users[i]);
       if (distance > max_distance){
         max_distance = distance;

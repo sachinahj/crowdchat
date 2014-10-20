@@ -16,6 +16,7 @@
     <div class="row top-bar">
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="row text-center">
+          <p id="crowd-count" class="pull-left">Crowd Count: <span id="crowd-count-value">0</span></p>
           <img class="top-bar-logo" src="/images/logo.png" />
           <button type="submit" id="crowd-surf-start-button"class="btn btn-primary btn-sm pull-right submit-button" onclick="startSim()">START</button>
         </div>
@@ -51,10 +52,11 @@
 
     <script type="text/javascript">
 
-      var all_crowds = [];
-      var default_radius = 0.09144;
-
-      var user, crowd;
+      var all_crowds = []
+        , default_radius = 0.09144
+        , user
+        , crowd
+        , count;
 
       function startSim () {
 
@@ -62,15 +64,31 @@
         crowd = findCrowdForUser(user);
         crowd = mergeCrowds(crowd);
 
+        count = getLargestCrowdCount();
+        console.log("count", count);
+
+        $('#crowd-count-value').text(count);
+
         setTimeout(function () {
           startSim();
         }, 100)
 
         return true;
 
-
       }  
 
+      function getLargestCrowdCount () {
+        var all_crowds_length = all_crowds.length
+          , max_crowd_count = 0;
+
+        for (var i = 0; i < all_crowds_length; i++) {
+          if (all_crowds[i].users.length > max_crowd_count) {
+            max_crowd_count = all_crowds[i].users.length;
+          }
+        }
+
+        return max_crowd_count;
+      }
 
 
     </script>
