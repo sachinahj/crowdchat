@@ -60,19 +60,11 @@
         var location = getRandomPersonLocation();
         var user = new User(location);
         user.place_marker();
-        var available_crowd = findCrowd(user);
 
-        if (available_crowd === null) {
+        var crowd = findCrowdForUser(user);
+        var crowd = mergeCrowds(crowd);
 
-          var crowd = new Crowd(user);
-          crowd.draw_circle();
-          all_crowds.push(crowd);
-
-        } else {
-
-
-
-        }
+        crowd.draw_circle();
 
       }
 
@@ -88,7 +80,10 @@
         user_id_counter += 1;
 
         // location attributes
-        this.location = location
+        this.location = {
+          latitude: location.latitude,
+          longitude: location.longitude
+        };
         
         // map attributes and functions
         this.marker = null;
@@ -127,13 +122,55 @@
         this.users = [user];
 
         // location attributes
-        this.location = user.location;
+        this.location = {
+          latitude: user.location.latitude,
+          longitude: user.location.longitude
+        }
+
         this.radius = 0.09144;
+        this.recalculate_location = function () {
+          var length = this.users.length;
+
+          var x_sum = 0;
+          var y_sum = 0;
+          var z_sum = 0;
+          for (var i = 0; i < length; i++) {
+            x_sum +=  Math.cos(this.users[i].location.latitude.toRad()) * 
+                      Math.cos(this.users[i].location.longitude.toRad());
+
+            y_sum +=  Math.cos(this.users[i].location.latitude.toRad()) * 
+                      Math.sin(this.users[i].location.longitude.toRad());
+
+            z_sum +=  Math.sin(this.users[i].location.latitude.toRad());
+          }
+          x_sum = x_sum / length;
+          y_sum = y_sum / length;
+          z_sum = z_sum / length;
+          var hyp = Math.sqrt(x_sum * x_sum + y_sum * y_sum);
+
+          this.location.latitude = Math.atan2(z_sum, hyp).toDeg();
+          this.location.longitude = Math.atan2(y_sum, x_sum).toDeg();
+
+          var max_distance = 0;
+          var distance;
+          for (var i = 0; i < length; i++) {
+            distance = distanceBetweenUsersCrowds(this, this.users[i]);
+            if (distance > max_distance){
+              max_distance = distance;
+            }
+          }
+          this.radius = max_distance + 0.09144;
+          return true;
+
+        }
         
         // map attributes and functions
         this.color = _.sample(colors, 1)[0];
         this.circle = null;
         this.draw_circle = function () {
+          if (this.circle) {
+            this.remove_circle();
+          }
           var center = new google.maps.LatLng(
             this.location.latitude,
             this.location.longitude
@@ -157,6 +194,7 @@
           this.circle = null;
           return true;
         }
+
 
       }
 
@@ -196,14 +234,24 @@
       }
 
       // find crowd within distance from user
-      function findCrowd (user) {
+      function findCrowdForUser (user) {
         var all_crowds_length = all_crowds.length
         var distance;
+        var radius_difference;
         for (var i = 0; i < all_crowds_length; i++) {
           distance = distanceBetweenUsersCrowds(user, all_crowds[i]);
-          console.log("distance" + i + ":  " + distance);
+          if (distance < (all_crowds[i].radius + 0.09144)) {
+            all_crowds[i].users.push(user);
+            all_crowds[i].recalculate_location();
+
+            var crowd = all_crowds[i]
+            return crowd;
+          }
         }
-        return null;
+
+        var crowd = new Crowd(user);
+        all_crowds.push(crowd);
+        return crowd;
       }
 
       // distance formula between two lat/lng points
@@ -225,6 +273,9 @@
         return d;
       }
 
+      function mergeCrowds(crowd) {
+        return crowd;
+      }
 
 
 
