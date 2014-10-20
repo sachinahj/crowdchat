@@ -51,6 +51,7 @@
     <script type="text/javascript">
 
       var all_crowds = [];
+      var default_radius = 0.09144;
 
       var createNewPerson = function () {
 
@@ -127,7 +128,7 @@
           longitude: user.location.longitude
         }
 
-        this.radius = 0.09144;
+        this.radius = default_radius;
         this.recalculate_location = function () {
           var length = this.users.length;
 
@@ -159,7 +160,7 @@
               max_distance = distance;
             }
           }
-          this.radius = max_distance + 0.09144;
+          this.radius = max_distance + default_radius;
           return true;
 
         }
@@ -233,27 +234,6 @@
         };
       }
 
-      // find crowd within distance from user
-      function findCrowdForUser (user) {
-        var all_crowds_length = all_crowds.length
-        var distance;
-        var radius_difference;
-        for (var i = 0; i < all_crowds_length; i++) {
-          distance = distanceBetweenUsersCrowds(user, all_crowds[i]);
-          if (distance < (all_crowds[i].radius + 0.09144)) {
-            all_crowds[i].users.push(user);
-            all_crowds[i].recalculate_location();
-
-            var crowd = all_crowds[i]
-            return crowd;
-          }
-        }
-
-        var crowd = new Crowd(user);
-        all_crowds.push(crowd);
-        return crowd;
-      }
-
       // distance formula between two lat/lng points
       function distanceBetweenUsersCrowds (user_crowd_1, user_crowd_2) {
         var lat1 = user_crowd_1.location.latitude;
@@ -273,7 +253,39 @@
         return d;
       }
 
+      // find crowd within distance from user
+      function findCrowdForUser (user) {
+        var all_crowds_length = all_crowds.length
+        var distance;
+        for (var i = 0; i < all_crowds_length; i++) {
+          distance = distanceBetweenUsersCrowds(user, all_crowds[i]);
+          if (distance < (all_crowds[i].radius + default_radius)) {
+            all_crowds[i].users.push(user);
+            all_crowds[i].recalculate_location();
+
+            var crowd = all_crowds[i]
+            return crowd;
+          }
+        }
+
+        var crowd = new Crowd(user);
+        all_crowds.push(crowd);
+        return crowd;
+      }
+
+      // merge crowds that have overlapping radii
       function mergeCrowds(crowd) {
+        var all_crowds_length = all_crowds.length;
+        var distance;
+        for (var i = 0; i < all_crowds_length; i++) {
+          if (all_crowds[i].id !== crowd.id) {
+            distance = distanceBetweenUsersCrowds(crowd, all_crowds[i]);
+            if (distance < (all_crowds[i].radius + crowd.radius)) {
+              console.log("in it", all_crowds[i]);
+            }
+          }
+        }
+
         return crowd;
       }
 
