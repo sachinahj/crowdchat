@@ -71,7 +71,7 @@ textarea:focus, input:focus, input[type]:focus, .uneditable-input:focus {
 }
 #brand-image-home {
   width: 250px;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
   margin-top: 50px;
   max-width: 30em;
 }
