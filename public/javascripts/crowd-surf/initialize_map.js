@@ -9,7 +9,7 @@
 
     var mapOptions = {
       center: center,
-      zoom: 16
+      zoom: 14
     };
 
     var map = new google.maps.Map(document.getElementById('crowd-surf-map-canvas'), mapOptions);
